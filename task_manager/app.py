@@ -1,11 +1,18 @@
+import logging
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+
+# Configuração do logger
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'  # Substitua 'your_secret_key' por uma chave segura
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://admin:siMxCmjNIf2xPq3JGng3@prod.ct8s4m4eyp62.sa-east-1.rds.amazonaws.com:3306/seu_banco_de_dados'  # Atualize 'seu_banco_de_dados' com o nome do banco correto
+app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://admin:siMxCmjNIf2xPq3JGng3@prod.ct8s4m4eyp62.sa-east-1.rds.amazonaws.com:3306/seu_banco_de_dados'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -111,6 +118,12 @@ def logout_user_account():
     logout_user()
     flash('Você saiu da conta.')
     return redirect(url_for('login'))
+
+# Listener para registrar operações no banco de dados
+@event.listens_for(Engine, "before_cursor_execute")
+def before_cursor_execute(conn, cursor, statement, parameters, context, executemany):
+    logger.info("Executando SQL: %s", statement)
+    logger.info("Parâmetros: %s", parameters)
 
 if __name__ == '__main__':
     with app.app_context():
