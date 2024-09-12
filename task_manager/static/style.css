@@ -88,3 +88,18 @@ h2::after {
     padding: 10px 20px;
     color: #fff;
 }
+.btn-register {
+    color: #fff; /* Cor do texto branco */
+    background-color: #ffffff; /* Cor de fundo branca */
+    border: 2px solid #007bff; /* Borda com detalhes na cor azul */
+    padding: 5px 15px; /* Espaçamento interno */
+    border-radius: 5px; /* Borda arredondada */
+    transition: all 0.3s ease; /* Transição suave */
+    text-decoration: none; /* Remove o sublinhado */
+}
+
+.btn-register:hover {
+    background-color: #007bff; /* Cor de fundo muda para azul no hover */
+    color: #ffffff; /* Texto branco */
+    text-decoration: none; /* Mantém sem sublinhado */
+}
